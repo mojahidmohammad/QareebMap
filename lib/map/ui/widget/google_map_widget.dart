@@ -190,7 +190,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
   }
 
   Future<List<Future<Marker>>> initMarker(MapControllerInitial state) async {
-    loggerObject.wtf(state.markers.length);
+
     return state.markers.keys.mapIndexed(
       (i, key) async {
         return await state.markers[key]!.getWidgetGoogleMap(

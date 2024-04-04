@@ -316,7 +316,7 @@ class MyMarker {
                         ),
                       ),
                     ImageMultiType(
-                      url: index.iconPoint,
+                      url: item is int ? (item as int).iconPoint : index.iconPoint,
                       height: 91.0.r,
                       width: 91.0.r,
                     ),

@@ -37,6 +37,10 @@ class AtherCubit extends Cubit<AtherInitial> {
     }
   }
 
+  void clearDrivers() {
+    emit(state.copyWith(statuses: CubitStatuses.done, result: []));
+  }
+
   static Future<Pair<List<Ime>?, String?>> getDriverLocationApi(List<String> ime) async {
     if (isAppleTestFromMapPackage) return Pair([], null);
 
@@ -71,6 +75,7 @@ class AtherCubit extends Cubit<AtherInitial> {
 
     return pair.first?.firstOrNull;
   }
+
   static Future<num> getDriverDistance({
     required String ime,
     required DateTime? start,
@@ -84,16 +89,16 @@ class AtherCubit extends Cubit<AtherInitial> {
       request: ApiServerRequest(
         url: APIService()
             .getUri(
-          url: 'api/api.php',
-          query: {
-            'api': 'user',
-            'ver': '1.0',
-            'key': atherKey,
-            'cmd':
-            'OBJECT_GET_MESSAGES,$ime,${start.formatDateAther},${end.formatDateAther}',
-          },
-          hostName: 'admin.alather.net',
-        )
+              url: 'api/api.php',
+              query: {
+                'api': 'user',
+                'ver': '1.0',
+                'key': atherKey,
+                'cmd':
+                    'OBJECT_GET_MESSAGES,$ime,${start.formatDateAther},${end.formatDateAther}',
+              },
+              hostName: 'admin.alather.net',
+            )
             .toString(),
       ),
     );
