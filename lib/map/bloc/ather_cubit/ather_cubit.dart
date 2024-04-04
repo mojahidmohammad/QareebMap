@@ -62,7 +62,7 @@ class AtherCubit extends Cubit<AtherInitial> {
     );
 
     if (pair.first != null) {
-      return Pair(AtherResponse.fromJson(jsonDecode(pair.first), ime).imes, null);
+      return Pair(AtherResponse.fromJson(jsonDecode(pair.first) is! Map?{}:jsonDecode(pair.first), ime).imes, null);
     } else {
       return Pair(null, pair.second ?? '');
     }
