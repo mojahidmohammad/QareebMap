@@ -29,9 +29,9 @@ dependencies:
 #    git:
 #      url: https://github.com/saedAlHanash/qareeb_models
 
-#
-#  qareeb_models:
-#    path: ../../packages/qareeb_models
+
+  qareeb_models:
+    path: ../../packages/qareeb_models
 
 
   google_maps_flutter: ^2.5.3
@@ -43,7 +43,7 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   http: any
   flutter_map: ^4.0.0
-  logger: ^1.1.0
+  logger: any
   flutter_map_animations: ^0.3.0
 #  dropdown_button2: ^2.3.9
   geolocator: any
