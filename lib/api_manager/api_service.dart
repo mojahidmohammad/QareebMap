@@ -288,7 +288,7 @@ class APIService {
 }
 
 void logRequest(String url, Map<String, dynamic>? q, {String? additional}) {
-  if (url.contains('ExecuteRequest')) return;
+  if (url.contains('ExecuteRequest') || url.contains('admin.alather.netapi')) return;
   loggerObject.i('$url \n ${jsonEncode(q)}${additional == null ? '' : '\n$additional'}');
 }
 
