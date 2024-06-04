@@ -325,7 +325,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       {required LatLng start, required LatLng end}) async {
     final response = await APIService().getApi(
         url: 'route/v1/driving',
-        host: 'router.project-osrm.org',
+        host: 'osrm.qareeb-maas.com',
         path: '${start.longitude},${start.latitude};'
             '${end.longitude},${end.latitude}');
 
