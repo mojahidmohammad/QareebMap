@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_polyline_algorithm/google_polyline_algorithm.dart';
+import 'package:map_package/api_manager/server_proxy/server_proxy_request.dart';
+import 'package:map_package/api_manager/server_proxy/server_proxy_service.dart';
 import 'package:qareeb_models/booking/trip_mediator.dart';
 import 'package:qareeb_models/extensions.dart';
 import 'package:qareeb_models/global.dart';
@@ -29,7 +31,8 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
   var mapHeight = 640.0;
   var mapWidth = 360.0;
 
-  void setGoogleMap(GoogleMapController controller) => state.controller = controller;
+  void setGoogleMap(GoogleMapController controller) =>
+      state.controller = controller;
 
   GoogleMapController? get controller => state.controller;
 
@@ -103,7 +106,8 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       Function(dynamic item)? onTapMarker,
       bool? withPathLength}) {
     clearMap(false);
-    addMarkers(marker: path.getMarkers(onTapMarker: onTapMarker), update: false);
+    addMarkers(
+        marker: path.getMarkers(onTapMarker: onTapMarker), update: false);
     addEncodedPolyLines(
       myPolyLines: path.getPolyLines(),
       update: false,
@@ -240,7 +244,8 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
     final pair = await getRoutePointApi(start: start, end: end);
 
     if (pair.first != null) {
-      var list = decodePolyline(pair.first!.routes.first.geometry).unpackPolyline();
+      var list =
+          decodePolyline(pair.first!.routes.first.geometry).unpackPolyline();
       if ((addPathLength ?? false) && list.length > 2) {
         addMarker(
           marker: MyMarker(
@@ -316,21 +321,36 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
           ),
         );
       }
-      state.polyLines[e.key ?? e.endPoint.hashCode] = Pair(list, e.color ?? Colors.black);
+      state.polyLines[e.key ?? e.endPoint.hashCode] =
+          Pair(list, e.color ?? Colors.black);
     }
-    if (update) emit(state.copyWith(polylineNotifier: state.polylineNotifier + 1));
+    if (update) {
+      emit(state.copyWith(polylineNotifier: state.polylineNotifier + 1));
+    }
   }
 
   Future<Pair<OsrmModel?, String?>> getRoutePointApi(
       {required LatLng start, required LatLng end}) async {
-    final response = await APIService().getApi(
-        url: 'route/v1/driving',
-        host: 'osrm.qareeb-maas.com',
-        path: '${start.longitude},${start.latitude};'
-            '${end.longitude},${end.latitude}');
+    final pair = await getServerProxyApi(
+      request: ApiServerRequest(
+        url: APIService()
+            .getUri(
+              url: 'route/v1/driving',
+              hostName: 'osrm.qareeb-maas.com',
+              path: '${start.longitude},${start.latitude};'
+                  '${end.longitude},${end.latitude}',
+            )
+            .toString(),
+      ),
+    );
+    // final response = await APIService().getApi(
+    //     url: 'route/v1/driving',
+    //     host: 'osrm.qareeb-maas.com',
+    //     path: '${start.longitude},${start.latitude};'
+    //         '${end.longitude},${end.latitude}');
 
-    if (response.statusCode == 200) {
-      return Pair(OsrmModel.fromJson(jsonDecode(response.body)), null);
+    if (pair.first != null) {
+      return Pair(OsrmModel.fromJson(jsonDecode(pair.first)), null);
     } else {
       return Pair(null, 'error');
     }
@@ -387,7 +407,8 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
   }
 
   void updateMarkersWithZoom(double zoom) {
-    emit(state.copyWith(markerNotifier: state.markerNotifier + 1, mapZoom: zoom));
+    emit(state.copyWith(
+        markerNotifier: state.markerNotifier + 1, mapZoom: zoom));
   }
 }
 
@@ -409,7 +430,8 @@ double getZoomLevel(LatLng point1, LatLng point2, double width) {
   final distance = distanceBetween(point1, point2) * 1000;
   final zoomScale = distance / (width * 0.6);
   final zoom =
-      log(40075016.686 * cos(point1.latitude * pi / 180) / (256 * zoomScale)) / log(2);
+      log(40075016.686 * cos(point1.latitude * pi / 180) / (256 * zoomScale)) /
+          log(2);
 
   return zoom;
 }

@@ -1,7 +1,3 @@
-import 'package:map_package/api_manager/api_service.dart';
-
-import '../map/ui/widget/map_widget.dart';
-import 'dart:io';
 
 class PostUrl {
   static const serverProxy =
@@ -9,14 +5,11 @@ class PostUrl {
 }
 
 String get baseUrl {
-  if (Platform.isIOS) {
-    if (isAppleTestFromMapPackage) return testUrl;
-  }
-
-  return liveUrl;
+  // return liveUrl;
+  return testLocal1Url;
 }
 
 const liveUrl = 'live.qareeb-maas.com';
 const testUrl = 'qareeb-api.first-pioneers.com.tr';
-
+const testLocal1Url = 'demo1.qareeb-maas.com';
 

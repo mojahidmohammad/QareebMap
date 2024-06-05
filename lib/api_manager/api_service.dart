@@ -307,14 +307,3 @@ void logResponse(String url, http.Response response) {
 
   loggerObject.v('${response.statusCode} \n $res');
 }
-
-// extension on String {
-//   List<String> splitByLength(int length) => [substring(0, length), substring(length)];
-// }
-
-// var uri = Uri.https(baseUrlProxy, hostName ?? '$baseUrl$url', query);
-// final uri = Uri.https(baseUrlProxy, '$baseUrl$url', query);
-// final uri = Uri.https(baseUrlProxy, '$baseUrl$url', query);
-// final uri = Uri.https(baseUrlProxy, '$baseUrl$url', query);
-// final uri = Uri.https(baseUrlProxy, '$baseUrl$url', query);
-// final uri = Uri.https(baseUrlProxy, '$baseUrl$url/${path ?? ''}');
