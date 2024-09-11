@@ -36,14 +36,14 @@ dependencies:
 
   google_maps_flutter: ^2.5.3
   flutter_bloc: any
-  widget_to_marker: ^1.0.4
+  widget_to_marker: ^1.0.6
   #  dartz: ^0.10.1
   equatable: ^2.0.5
   get_it: any
   http: any
-  flutter_map: ^4.0.0
+  flutter_map: ^7.0.2
   logger: any
-  flutter_map_animations: ^0.3.0
+  flutter_map_animations: ^0.7.1
   dropdown_button2: any
   geolocator: any
   collection: any

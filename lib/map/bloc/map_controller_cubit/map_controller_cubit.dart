@@ -324,9 +324,8 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       state.polyLines[e.key ?? e.endPoint.hashCode] =
           Pair(list, e.color ?? Colors.black);
     }
-    if (update) {
+    if (update)
       emit(state.copyWith(polylineNotifier: state.polylineNotifier + 1));
-    }
   }
 
   Future<Pair<OsrmModel?, String?>> getRoutePointApi(

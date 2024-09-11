@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/plugin_api.dart';
+import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:map_package/map/ui/widget/map_widget.dart';
 import 'package:map_package/map/utile.dart';
@@ -27,7 +27,7 @@ class MapTypeSpinner extends StatelessWidget {
       child: PopupMenuButton<MyMapType>(
         initialValue: context.read<MapControlCubit>().state.type,
         onSelected: (MyMapType item) {
-          context.read<MapControlCubit>().changeMapType(item, controller.center.gll);
+          // context.read<MapControlCubit>().changeMapType(item, controller.center.gll);
         },
         child: const Card(
           elevation: 3.0,

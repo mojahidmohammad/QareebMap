@@ -149,85 +149,79 @@ class MyMarker {
           point: ll.LatLng(point.latitude, point.longitude),
           height: markerSize?.height ?? 70.0.r,
           width: markerSize?.width ?? 70.0.r,
-          builder: (context) {
-            return costumeMarker ??
-                ImageMultiType(
-                  url: Assets.iconsMainColorMarker,
-                  height: 70.0.r,
-                  width: 70.0.r,
-                );
-          },
+          child: costumeMarker ??
+              ImageMultiType(
+                url: Assets.iconsMainColorMarker,
+                height: 70.0.r,
+                width: 70.0.r,
+              ),
         );
       case MyMarkerType.point:
         return Marker(
           point: ll.LatLng(point.latitude, point.longitude),
           height: markerSize?.height ?? 110.0.spMin,
           width: markerSize?.width ?? 150.0.spMin,
-          builder: (context) {
-            return costumeMarker ??
-                InkWell(
-                  onTap: onTapMarker1 == null ? null : () => onTapMarker1!.call(item),
-                  child: Column(
-                    children: [
-                      const ImageMultiType(
-                        url: Assets.iconsMainColorMarker,
-                        height: 35.0,
-                        width: 35.0,
-                        color: Colors.black,
-                      ),
-                      if (item is TripPoint)
-                        SizedBox(
-                          width: 150.0.spMin,
-                          child: DrawableText(
-                            selectable: false,
-                            text: (item as TripPoint).arName,
-                            size: 14.0.sp,
-                            maxLines: 2,
-                            matchParent: true,
-                            textAlign: TextAlign.center,
-                          ),
+          child:costumeMarker ??
+              InkWell(
+                onTap: onTapMarker1 == null ? null : () => onTapMarker1!.call(item),
+                child: Column(
+                  children: [
+                    const ImageMultiType(
+                      url: Assets.iconsMainColorMarker,
+                      height: 35.0,
+                      width: 35.0,
+                      color: Colors.black,
+                    ),
+                    if (item is TripPoint)
+                      SizedBox(
+                        width: 150.0.spMin,
+                        child: DrawableText(
+                          selectable: false,
+                          text: (item as TripPoint).arName,
+                          size: 14.0.sp,
+                          maxLines: 2,
+                          matchParent: true,
+                          textAlign: TextAlign.center,
                         ),
-                    ],
-                  ),
-                );
-          },
+                      ),
+                  ],
+                ),
+              ),
         );
       case MyMarkerType.sharedPint:
         return Marker(
           point: ll.LatLng(point.latitude, point.longitude),
           height: markerSize?.height ?? 50.0.r,
           width: markerSize?.width ?? 50.0.r,
-          builder: (context) {
-            return costumeMarker ??
-                InkWell(
-                  onTap: onTapMarker1 == null ? null : () => onTapMarker1?.call(item),
-                  child: Column(
-                    children: [
-                      if (nou.isNotEmpty)
-                        Container(
-                          height: 35.0.r,
-                          width: 70.0.r,
-                          margin: EdgeInsets.only(bottom: 5.0.r),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(5.0.r),
-                          ),
-                          alignment: Alignment.center,
-                          child: DrawableText(
-                            text: '$nou مقعد',
-                            color: Colors.black,
-                            size: 12.0.sp,
-                          ),
+          child: costumeMarker ??
+              InkWell(
+                onTap: onTapMarker1 == null ? null : () => onTapMarker1?.call(item),
+                child: Column(
+                  children: [
+                    if (nou.isNotEmpty)
+                      Container(
+                        height: 35.0.r,
+                        width: 70.0.r,
+                        margin: EdgeInsets.only(bottom: 5.0.r),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(5.0.r),
                         ),
-                      ImageMultiType(
-                        url: index.iconPoint,
-                        height: 50.0.r,
-                        width: 50.0.r,
+                        alignment: Alignment.center,
+                        child: DrawableText(
+                          text: '$nou مقعد',
+                          color: Colors.black,
+                          size: 12.0.sp,
+                        ),
                       ),
-                    ],
-                  ),
-                );
-          },
+                    ImageMultiType(
+                      url: index.iconPoint,
+                      height: 50.0.r,
+                      width: 50.0.r,
+                    ),
+                  ],
+                ),
+              ),
         );
       case MyMarkerType.driver:
       case MyMarkerType.bus:
@@ -235,24 +229,22 @@ class MyMarker {
           point: ll.LatLng(point.latitude, point.longitude),
           height: markerSize?.height ?? 150.0.spMin,
           width: markerSize?.width ?? 150.0.spMin,
-          builder: (context) {
-            return costumeMarker ??
-                InkWell(
-                  onTap: onTapMarker1 == null ? null : () => onTapMarker1?.call(item),
-                  child: Column(
-                    children: [
-                      Transform.rotate(
-                        angle: bearing ?? 0.0,
-                        child: ImageMultiType(
-                          url: Assets.iconsCarTopView,
-                          height: 40.0.spMin,
-                          width: 40.0.spMin,
-                        ),
-                      ),
-                    ],
+        child: costumeMarker ??
+            InkWell(
+              onTap: onTapMarker1 == null ? null : () => onTapMarker1?.call(item),
+              child: Column(
+                children: [
+                  Transform.rotate(
+                    angle: bearing ?? 0.0,
+                    child: ImageMultiType(
+                      url: Assets.iconsCarTopView,
+                      height: 40.0.spMin,
+                      width: 40.0.spMin,
+                    ),
                   ),
-                );
-          },
+                ],
+              ),
+            ),
         );
     }
   }
