@@ -35,7 +35,10 @@ class GMapWidget extends StatefulWidget {
   final LatLng? initialPoint;
   final bool? updateMarkerWithZoom;
   final bool atherListener;
-
+  static initImeis(List<String> imei) => imeis
+    ..clear()
+    ..addAll(imei)
+    ..removeWhere((element) => element.isEmpty);
   GlobalKey<GMapWidgetState> getKey() {
     return GlobalKey<GMapWidgetState>();
   }
