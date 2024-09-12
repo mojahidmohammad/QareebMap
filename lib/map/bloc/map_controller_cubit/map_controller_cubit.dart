@@ -106,13 +106,15 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       Function(dynamic item)? onTapMarker,
       bool? withPathLength}) {
     clearMap(false);
-    addMarkers(
-        marker: path.getMarkers(onTapMarker: onTapMarker), update: false);
+
+    addMarkers(marker: path.getMarkers(onTapMarker: onTapMarker), update: false);
+
     addEncodedPolyLines(
       myPolyLines: path.getPolyLines(),
       update: false,
       addPathLength: withPathLength,
     );
+
     centerPointMarkers();
     emit(state.copyWith(
       markerNotifier: state.markerNotifier + 1,

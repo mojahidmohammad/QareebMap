@@ -65,9 +65,10 @@ extension PathMap on TripPath {
             ),
           );
         }
+
         list.add(
           MyMarker(
-            item: i,
+            item: i+1,
             point: e.endPoint.getLatLng,
             type: MyMarkerType.sharedPint,
             onTapMarker1: onTapMarker,
