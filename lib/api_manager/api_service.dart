@@ -12,7 +12,7 @@ import 'package:qareeb_models/extensions.dart';
 
 import 'api_url.dart';
 
-var loggerObject = Logger(
+var _loggerObject = Logger(
   printer: PrettyPrinter(
     methodCount: 0,
     // number of method calls to be displayed
@@ -289,7 +289,7 @@ class APIService {
 
 void logRequest(String url, Map<String, dynamic>? q, {String? additional}) {
   if (url.contains('ExecuteRequest') || url.contains('admin.alather.netapi')) return;
-  loggerObject.i('$url \n ${jsonEncode(q)}${additional == null ? '' : '\n$additional'}');
+  _loggerObject.i('$url \n ${jsonEncode(q)}${additional == null ? '' : '\n$additional'}');
 }
 
 void logResponse(String url, http.Response response) {
@@ -305,5 +305,5 @@ void logResponse(String url, http.Response response) {
     res = response.body;
   }
 
-  loggerObject.v('${response.statusCode} \n $res');
+  _loggerObject.v('${response.statusCode} \n $res');
 }
