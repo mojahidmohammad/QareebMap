@@ -36,11 +36,10 @@ class GMapWidget extends StatefulWidget {
   final bool? updateMarkerWithZoom;
   final bool atherListener;
 
-  static initImeis(List<String> imei) =>
-      imeis
-        ..clear()
-        ..addAll(imei)
-        ..removeWhere((element) => element.isEmpty);
+  static initImeis(List<String> imei) => imeis
+    ..clear()
+    ..addAll(imei)
+    ..removeWhere((element) => element.isEmpty);
 
   GlobalKey<GMapWidgetState> getKey() {
     return GlobalKey<GMapWidgetState>();
@@ -142,15 +141,31 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
             }
 
             if (state.centerZoomPoints.isNotEmpty) {
-              final f = CameraUpdate.newLatLngBounds(
-                  calculateLatLngBounds(state.centerZoomPoints), 40);
+              final bound = calculateLatLngBounds(state.centerZoomPoints);
 
-              await mapControllerCubit.controller?.animateCamera(f);
+              final  midpoint = LatLng(
+                (bound.southwest.latitude + bound.northeast.latitude) / 2,
+                (bound.southwest.longitude + bound.northeast.longitude) / 2,
+              );
+
+              await mapControllerCubit.controller?.animateCamera(
+                CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                    target: midpoint,
+                    zoom: getZoomLevel(
+                      bound.southwest,
+                      bound.northeast,
+                      mapWidgetKey.currentContext?.size?.width ?? 1.0.sw,
+                    ),
+                  ),
+                ),
+              );
             }
           },
         ),
       ],
       child: GoogleMap(
+        key: mapWidgetKey,
         mapType: MapType.normal,
         initialCameraPosition: CameraPosition(
           target: widget.initialPoint ?? initialPoint,
@@ -188,7 +203,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
           seconds: 15,
           hours: isAppleTestFromMapPackage ? 10 : 0,
         ),
-            (timer) {
+        (timer) {
           if (!mounted) return;
           context.read<AtherCubit>().getDriverLocation(imeis);
         },
@@ -207,7 +222,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
 
   Future<List<Future<Marker>>> initMarker(MapControllerInitial state) async {
     return state.markers.keys.mapIndexed(
-          (i, key) async {
+      (i, key) async {
         return await state.markers[key]!.getWidgetGoogleMap(
           index: i,
           key: key,
@@ -218,7 +233,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
 
   List<Polyline> initPolyline(MapControllerInitial state) {
     return state.polyLines.values.mapIndexed(
-          (i, e) {
+      (i, e) {
         return Polyline(
           points: e.first,
           color: e.second,
