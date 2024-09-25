@@ -2,7 +2,7 @@ part of 'my_location_cubit.dart';
 
 class MyLocationInitial {
   final LatLng result;
-  final CubitStatuses state;
+  final MapCubitStatuses state;
   final String error;
   final bool moveMap;
 
@@ -18,13 +18,13 @@ class MyLocationInitial {
       result: LatLng(0, 0),
       error: '',
       moveMap: false,
-      state: CubitStatuses.init,
+      state: MapCubitStatuses.init,
     );
   }
 
   MyLocationInitial copyWith({
     LatLng? result,
-    CubitStatuses? state,
+    MapCubitStatuses? state,
     String? error,
     bool? moveMap,
   }) {

@@ -35,10 +35,13 @@ class GMapWidget extends StatefulWidget {
   final LatLng? initialPoint;
   final bool? updateMarkerWithZoom;
   final bool atherListener;
-  static initImeis(List<String> imei) => imeis
-    ..clear()
-    ..addAll(imei)
-    ..removeWhere((element) => element.isEmpty);
+
+  static initImeis(List<String> imei) =>
+      imeis
+        ..clear()
+        ..addAll(imei)
+        ..removeWhere((element) => element.isEmpty);
+
   GlobalKey<GMapWidgetState> getKey() {
     return GlobalKey<GMapWidgetState>();
   }
@@ -67,6 +70,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
         if (widget.atherListener)
           BlocListener<AtherCubit, AtherInitial>(
             listener: (context, state) async {
+              //ال __ هي لتمييز ماركر السيارة عن بقية الماركرات
               markers.removeWhere((e) => e.markerId.value.startsWith('__'));
 
               final list = state.result.map((e) async {
@@ -79,6 +83,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
                   imageSize: Size(150.0.r, 150.0.r),
                 );
                 return Marker(
+                  //هون عم يتم تحديد ماركر السائق
                   markerId: MarkerId('__${e.ime}'),
                   position: e.getLatLng(),
                   icon: icon,
@@ -88,6 +93,14 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
               for (var e in list) {
                 markers.add(await e);
               }
+
+              if (list.length == 1 && context.mounted) {
+                mapLogger.w((state.result.first).getLatLng());
+                context
+                    .read<MapControllerCubit>()
+                    .movingCamera(point: (state.result.first).getLatLng());
+              }
+
               setState(() {});
             },
           ),
@@ -116,7 +129,9 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
         BlocListener<MapControllerCubit, MapControllerInitial>(
           listener: (context, state) async {
             if (state.point != null) {
-              mapControllerCubit.controller?.animateCamera(
+              mapLogger.w(state.point ?? initialPoint);
+
+              await mapControllerCubit.controller?.animateCamera(
                 CameraUpdate.newCameraPosition(
                   CameraPosition(
                     target: state.point ?? initialPoint,
@@ -127,12 +142,10 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
             }
 
             if (state.centerZoomPoints.isNotEmpty) {
-              mapControllerCubit.controller?.animateCamera(
-                CameraUpdate.newLatLngBounds(
-                  calculateLatLngBounds(state.centerZoomPoints),
-                  40.0.r,
-                ),
-              );
+              final f = CameraUpdate.newLatLngBounds(
+                  calculateLatLngBounds(state.centerZoomPoints), 40);
+
+              await mapControllerCubit.controller?.animateCamera(f);
             }
           },
         ),
@@ -175,7 +188,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
           seconds: 15,
           hours: isAppleTestFromMapPackage ? 10 : 0,
         ),
-        (timer) {
+            (timer) {
           if (!mounted) return;
           context.read<AtherCubit>().getDriverLocation(imeis);
         },
@@ -188,14 +201,13 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
     timer?.cancel();
 
     mapControllerCubit.controller?.dispose();
-
+    mapControllerCubit.setGoogleMap(null);
     super.dispose();
   }
 
   Future<List<Future<Marker>>> initMarker(MapControllerInitial state) async {
-
     return state.markers.keys.mapIndexed(
-      (i, key) async {
+          (i, key) async {
         return await state.markers[key]!.getWidgetGoogleMap(
           index: i,
           key: key,
@@ -206,7 +218,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
 
   List<Polyline> initPolyline(MapControllerInitial state) {
     return state.polyLines.values.mapIndexed(
-      (i, e) {
+          (i, e) {
         return Polyline(
           points: e.first,
           color: e.second,

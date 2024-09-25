@@ -21,16 +21,18 @@ dependencies:
     git:
       url: https://github.com/saedAlHanash/image_multi_type
 
-  qareeb_models:
-    git:
-      url: https://github.com/saedAlHanash/qareeb_models
+#  qareeb_models:
+#    git:
+#      url: https://github.com/saedAlHanash/qareeb_models
 
 #
-#  qareeb_models:
-#    path: ../../packages/qareeb_models
+  qareeb_models:
+    path: ../../packages/qareeb_models
 
 
-  google_maps_flutter: ^2.5.3
+  google_maps_flutter: ^2.9.0
+  google_maps_flutter_platform_interface: ^2.9.1
+  google_maps_flutter_android: 2.14.7
   flutter_bloc: any
   widget_to_marker: ^1.0.6
   #  dartz: ^0.10.1

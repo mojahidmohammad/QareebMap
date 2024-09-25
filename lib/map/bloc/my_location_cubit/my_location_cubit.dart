@@ -5,6 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:qareeb_models/global.dart';
 
+import '../ather_cubit/ather_cubit.dart';
+
 part 'my_location_state.dart';
 
 void showErrorSnackBar({required String message, required BuildContext context}) {
@@ -74,7 +76,7 @@ class MyLocationCubit extends Cubit<MyLocationInitial> {
       }
     }
 
-    emit(state.copyWith(state: CubitStatuses.loading, moveMap: moveMap));
+    emit(state.copyWith(state: MapCubitStatuses.loading, moveMap: moveMap));
 
     // When we reach here, permissions are granted and we can
     // continue accessing the position of the device.
@@ -85,7 +87,7 @@ class MyLocationCubit extends Cubit<MyLocationInitial> {
     if (pos != null) {
       final latLng = LatLng(pos.latitude, pos.longitude);
 
-      emit(state.copyWith(result: latLng, state: CubitStatuses.done));
+      emit(state.copyWith(result: latLng, state: MapCubitStatuses.done));
     }
   }
 }

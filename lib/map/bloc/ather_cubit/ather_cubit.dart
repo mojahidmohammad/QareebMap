@@ -17,7 +17,7 @@ import '../../ui/widget/map_widget.dart';
 import '../map_controller_cubit/map_controller_cubit.dart';
 
 part 'ather_state.dart';
-
+enum MapCubitStatuses { init, loading, done, error }
 const atherKey = '5BE3080722588655FE55B8E89B765827';
 
 class AtherCubit extends Cubit<AtherInitial> {
@@ -33,12 +33,12 @@ class AtherCubit extends Cubit<AtherInitial> {
 
     if (pair.first != null) {
       if (isClosed) return;
-      emit(state.copyWith(statuses: CubitStatuses.done, result: pair.first));
+      emit(state.copyWith(statuses: MapCubitStatuses.done, result: pair.first));
     }
   }
 
   void clearDrivers() {
-    emit(state.copyWith(statuses: CubitStatuses.done, result: []));
+    emit(state.copyWith(statuses: MapCubitStatuses.done, result: []));
   }
 
   static Future<Pair<List<Ime>?, String?>> getDriverLocationApi(List<String> ime) async {

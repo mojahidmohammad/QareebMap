@@ -1,7 +1,7 @@
 part of 'ather_cubit.dart';
 
 class AtherInitial extends Equatable {
-  final CubitStatuses statuses;
+  final MapCubitStatuses statuses;
   final List<Ime> result;
   final String error;
 
@@ -15,7 +15,7 @@ class AtherInitial extends Equatable {
     return const AtherInitial(
       result: [],
       error: '',
-      statuses: CubitStatuses.init,
+      statuses: MapCubitStatuses.init,
     );
   }
 
@@ -23,7 +23,7 @@ class AtherInitial extends Equatable {
   List<Object> get props => [statuses, result, error];
 
   AtherInitial copyWith({
-    CubitStatuses? statuses,
+    MapCubitStatuses? statuses,
     List<Ime>? result,
     String? error,
   }) {

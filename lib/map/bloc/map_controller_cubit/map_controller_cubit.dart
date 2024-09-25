@@ -31,8 +31,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
   var mapHeight = 640.0;
   var mapWidth = 360.0;
 
-  void setGoogleMap(GoogleMapController controller) =>
-      state.controller = controller;
+  void setGoogleMap(GoogleMapController? controller) => state.controller = controller;
 
   GoogleMapController? get controller => state.controller;
 
@@ -246,8 +245,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
     final pair = await getRoutePointApi(start: start, end: end);
 
     if (pair.first != null) {
-      var list =
-          decodePolyline(pair.first!.routes.first.geometry).unpackPolyline();
+      var list = decodePolyline(pair.first!.routes.first.geometry).unpackPolyline();
       if ((addPathLength ?? false) && list.length > 2) {
         addMarker(
           marker: MyMarker(
@@ -323,11 +321,9 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
           ),
         );
       }
-      state.polyLines[e.key ?? e.endPoint.hashCode] =
-          Pair(list, e.color ?? Colors.black);
+      state.polyLines[e.key ?? e.endPoint.hashCode] = Pair(list, e.color ?? Colors.black);
     }
-    if (update)
-      emit(state.copyWith(polylineNotifier: state.polylineNotifier + 1));
+    if (update) emit(state.copyWith(polylineNotifier: state.polylineNotifier + 1));
   }
 
   Future<Pair<OsrmModel?, String?>> getRoutePointApi(
@@ -408,8 +404,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
   }
 
   void updateMarkersWithZoom(double zoom) {
-    emit(state.copyWith(
-        markerNotifier: state.markerNotifier + 1, mapZoom: zoom));
+    emit(state.copyWith(markerNotifier: state.markerNotifier + 1, mapZoom: zoom));
   }
 }
 
@@ -431,8 +426,7 @@ double getZoomLevel(LatLng point1, LatLng point2, double width) {
   final distance = distanceBetween(point1, point2) * 1000;
   final zoomScale = distance / (width * 0.6);
   final zoom =
-      log(40075016.686 * cos(point1.latitude * pi / 180) / (256 * zoomScale)) /
-          log(2);
+      log(40075016.686 * cos(point1.latitude * pi / 180) / (256 * zoomScale)) / log(2);
 
   return zoom;
 }

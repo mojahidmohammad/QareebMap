@@ -12,6 +12,7 @@ import '../../../api_manager/server_proxy/server_proxy_request.dart';
 import '../../../api_manager/server_proxy/server_proxy_service.dart';
 import '../../../error_manager.dart';
 import '../../data/response/search_location_response.dart';
+import '../ather_cubit/ather_cubit.dart';
 
 part 'search_location_state.dart';
 
@@ -22,19 +23,19 @@ class SearchLocationCubit extends Cubit<SearchLocationInitial> {
     if (request.isEmpty ||
         request.length < 3 ||
         request.removeSpace == state.request.removeSpace) {
-      emit(state.copyWith(statuses: CubitStatuses.done, result: []));
+      emit(state.copyWith(statuses: MapCubitStatuses.done, result: []));
       return;
     }
     request = 'دمشق $request';
 
-    emit(state.copyWith(statuses: CubitStatuses.loading, request: request));
+    emit(state.copyWith(statuses: MapCubitStatuses.loading, request: request));
 
     final pair = await _searchLocationApi();
 
     if (pair.first != null) {
-      emit(state.copyWith(statuses: CubitStatuses.done, result: pair.first));
+      emit(state.copyWith(statuses: MapCubitStatuses.done, result: pair.first));
     } else {
-      emit(state.copyWith(statuses: CubitStatuses.done, result: []));
+      emit(state.copyWith(statuses: MapCubitStatuses.done, result: []));
     }
   }
 
