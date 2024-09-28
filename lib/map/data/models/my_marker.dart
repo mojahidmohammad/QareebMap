@@ -3,406 +3,88 @@ import 'dart:ui' as ui;
 import 'package:drawable_text/drawable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_map/flutter_map.dart';
+
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as google_map;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'package:image_multi_type/image_multi_type.dart';
-import 'package:latlong2/latlong.dart' as ll;
+import 'package:map_package/map/util.dart';
 import 'package:qareeb_models/global.dart';
 import 'package:qareeb_models/points/data/model/trip_point.dart';
 
 import '../../../generated/assets.dart';
-import '../response/ather_response.dart';
 
 import 'package:widget_to_marker/widget_to_marker.dart';
 
-Future<Uint8List> getBytesFromAsset(String path, num width) async {
-  final data = await rootBundle.load(path);
-  final codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),
-      targetWidth: width.toInt());
-  final fi = await codec.getNextFrame();
-
-  final bytes =
-      (await fi.image.toByteData(format: ui.ImageByteFormat.png))?.buffer.asUint8List() ??
-          Uint8List(0);
-  return bytes;
-}
-
-Future<Uint8List> getBytesFromCanvas(int width, int height) async {
-  final ui.PictureRecorder pictureRecorder = ui.PictureRecorder();
-  final Canvas canvas = Canvas(pictureRecorder);
-  final Paint paint = Paint()..color = Colors.blue;
-  const radius = Radius.circular(20.0);
-  canvas.drawRRect(
-      RRect.fromRectAndCorners(
-        Rect.fromLTWH(0.0, 0.0, width.toDouble(), height.toDouble()),
-        topLeft: radius,
-        topRight: radius,
-        bottomLeft: radius,
-        bottomRight: radius,
-      ),
-      paint);
-  TextPainter painter = TextPainter(textDirection: TextDirection.ltr);
-  painter.text = const TextSpan(
-    text: 'Hello world',
-    style: TextStyle(fontSize: 25.0, color: Colors.white),
-  );
-  painter.layout();
-  painter.paint(canvas,
-      Offset((width * 0.5) - painter.width * 0.5, (height * 0.5) - painter.height * 0.5));
-  final img = await pictureRecorder.endRecording().toImage(width, height);
-  final data = await img.toByteData(format: ui.ImageByteFormat.png);
-  return data?.buffer.asUint8List() ?? Uint8List(0);
-}
-
-extension IconPoint on num {
-  String get iconPoint {
-    final data = toInt() + 1;
-    switch (data) {
-      case 1:
-        return Assets.icons1;
-      case 2:
-        return Assets.icons2;
-      case 3:
-        return Assets.icons3;
-      case 4:
-        return Assets.icons4;
-      case 5:
-        return Assets.icons5;
-      case 6:
-        return Assets.icons6;
-      case 7:
-        return Assets.icons7;
-      case 8:
-        return Assets.icons8;
-      case 9:
-        return Assets.icons9;
-      case 10:
-        return Assets.icons10;
-      case 11:
-        return Assets.icons11;
-      case 12:
-        return Assets.icons12;
-      case 13:
-        return Assets.icons13;
-      case 14:
-        return Assets.icons14;
-      case 15:
-        return Assets.icons15;
-      case 16:
-        return Assets.icons16;
-      case 17:
-        return Assets.icons17;
-      case 18:
-        return Assets.icons18;
-      case 19:
-        return Assets.icons19;
-      case 20:
-        return Assets.icons20;
-      case 21:
-        return Assets.icons21;
-      case 22:
-        return Assets.icons22;
-      case 23:
-        return Assets.icons23;
-      case 24:
-        return Assets.icons24;
-      case 25:
-        return Assets.icons25;
-      case 26:
-        return Assets.icons26;
-    }
-    return Assets.icons26;
-  }
-}
-
 class MyMarker {
-  google_map.LatLng point;
-  num? key;
-  double? bearing;
-  MyMarkerType type;
-  dynamic item;
-  Size? markerSize;
+  final LatLng point;
+   int? markerKey;
+  final double bearing;
+  final MyMarkerType type;
+  final Size markerSize;
   Widget? costumeMarker;
-  Function(dynamic item)? onTapMarker1;
-
-  ///Number of users pickup
-  String nou;
+  dynamic item;
+  Function(dynamic item)? onTapMarker;
 
   MyMarker({
     required this.point,
-    this.key,
-    this.bearing,
-    this.item,
-    this.markerSize,
-    this.nou = '',
-    this.onTapMarker1,
-    this.costumeMarker,
+     this.markerKey,
+    this.bearing = 0,
     this.type = MyMarkerType.location,
+    this.item,
+    this.markerSize = const Size(100.0, 100.0),
+    this.onTapMarker,
+    this.costumeMarker,
   });
 
-  Marker getWidget(int index) {
-    switch (type) {
-      case MyMarkerType.location:
-        return Marker(
-          point: ll.LatLng(point.latitude, point.longitude),
-          height: markerSize?.height ?? 70.0.r,
-          width: markerSize?.width ?? 70.0.r,
-          child: costumeMarker ??
-              ImageMultiType(
-                url: Assets.iconsMainColorMarker,
-                height: 70.0.r,
-                width: 70.0.r,
-              ),
-        );
-      case MyMarkerType.point:
-        return Marker(
-          point: ll.LatLng(point.latitude, point.longitude),
-          height: markerSize?.height ?? 110.0.spMin,
-          width: markerSize?.width ?? 150.0.spMin,
-          child:costumeMarker ??
-              InkWell(
-                onTap: onTapMarker1 == null ? null : () => onTapMarker1!.call(item),
-                child: Column(
-                  children: [
-                    const ImageMultiType(
-                      url: Assets.iconsMainColorMarker,
-                      height: 35.0,
-                      width: 35.0,
-                      color: Colors.black,
-                    ),
-                    if (item is TripPoint)
-                      SizedBox(
-                        width: 150.0.spMin,
-                        child: DrawableText(
-                          selectable: false,
-                          text: (item as TripPoint).arName,
-                          size: 14.0.sp,
-                          maxLines: 2,
-                          matchParent: true,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-        );
-      case MyMarkerType.sharedPint:
-        return Marker(
-          point: ll.LatLng(point.latitude, point.longitude),
-          height: markerSize?.height ?? 50.0.r,
-          width: markerSize?.width ?? 50.0.r,
-          child: costumeMarker ??
-              InkWell(
-                onTap: onTapMarker1 == null ? null : () => onTapMarker1?.call(item),
-                child: Column(
-                  children: [
-                    if (nou.isNotEmpty)
-                      Container(
-                        height: 35.0.r,
-                        width: 70.0.r,
-                        margin: EdgeInsets.only(bottom: 5.0.r),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5.0.r),
-                        ),
-                        alignment: Alignment.center,
-                        child: DrawableText(
-                          text: '$nou مقعد',
-                          color: Colors.black,
-                          size: 12.0.sp,
-                        ),
-                      ),
-                    ImageMultiType(
-                      url: index.iconPoint,
-                      height: 50.0.r,
-                      width: 50.0.r,
-                    ),
-                  ],
-                ),
-              ),
-        );
-      case MyMarkerType.driver:
-      case MyMarkerType.bus:
-        return Marker(
-          point: ll.LatLng(point.latitude, point.longitude),
-          height: markerSize?.height ?? 150.0.spMin,
-          width: markerSize?.width ?? 150.0.spMin,
-        child: costumeMarker ??
-            InkWell(
-              onTap: onTapMarker1 == null ? null : () => onTapMarker1?.call(item),
-              child: Column(
-                children: [
-                  Transform.rotate(
-                    angle: bearing ?? 0.0,
-                    child: ImageMultiType(
-                      url: Assets.iconsCarTopView,
-                      height: 40.0.spMin,
-                      width: 40.0.spMin,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-        );
+  Future<BitmapDescriptor> getBitmapFromType(MyMarkerType type, int index) async {
+    if (costumeMarker != null) {
+      return costumeMarker!.toBitmapDescriptor(
+        logicalSize: markerSize,
+        imageSize: markerSize,
+      );
     }
+
+    final imageMarker = ImageMultiType(
+      url: (MyMarkerType.location == type || type == MyMarkerType.point) // normal marker
+          ? Assets.iconsMainColorMarker
+          : (type == MyMarkerType.bus || type == MyMarkerType.driver) // car marker
+              ? Assets.iconsCarTopView
+              : (type == MyMarkerType.sharedPint) // shred point
+                  ? item is int
+                      ? (item as int).iconPoint
+                      : index.iconPoint
+                  : '',
+      height: 300.0.r,
+      width: 300.0.r,
+    );
+
+    return imageMarker.toBitmapDescriptor(
+      logicalSize: markerSize,
+      imageSize: markerSize,
+    );
   }
 
-  Future<google_map.BitmapDescriptor> getBitmapFromType(
-      MyMarkerType type, int index) async {
-    switch (type) {
-      case MyMarkerType.location:
-        return (costumeMarker ??
-                ImageMultiType(
-                  url: Assets.iconsMainColorMarker,
-                  height: 100.0.r,
-                  width: 100.0.r,
-                ))
-            .toBitmapDescriptor(
-          logicalSize: markerSize ?? Size(100.0.r, 100.0.r),
-          imageSize: markerSize ?? Size(100.0.r, 100.0.r),
-        );
-      case MyMarkerType.bus:
-      case MyMarkerType.driver:
-        return (costumeMarker ??
-                ImageMultiType(
-                  url: Assets.iconsCarTopView,
-                  height: 91.0.spMin,
-                  width: 91.0.spMin,
-                ))
-            .toBitmapDescriptor(
-          logicalSize: markerSize ?? Size(100.0.r, 100.0.r),
-          imageSize: markerSize ?? Size(100.0.r, 100.0.r),
-        );
-      case MyMarkerType.point:
-        return (costumeMarker ??
-                ImageMultiType(
-                  url: Assets.iconsMainColorMarker,
-                  height: 100.0.r,
-                  width: 100.0.r,
-                  color: Colors.black,
-                ))
-            .toBitmapDescriptor(
-          logicalSize: markerSize ?? Size(100.0.r, 100.0.r),
-          imageSize: markerSize ?? Size(100.0.r, 100.0.r),
-        );
-      case MyMarkerType.sharedPint:
-        return (costumeMarker ??
-                Column(
-                  children: [
-                    if (nou.isNotEmpty)
-                      Container(
-                        height: 70.0.r,
-                        width: 100.0.r,
-                        margin: EdgeInsets.only(bottom: 5.0.r),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(5.0.r),
-                        ),
-                        alignment: Alignment.center,
-                        child: DrawableText(
-                          text: '$nou مقعد',
-                          color: Colors.black,
-                          size: 12.0.sp,
-                        ),
-                      ),
-                    ImageMultiType(
-                      url: item is int ? (item as int).iconPoint : index.iconPoint,
-                      height: 91.0.r,
-                      width: 91.0.r,
-                    ),
-                  ],
-                ))
-            .toBitmapDescriptor(
-          logicalSize: markerSize ?? Size(100.0.r, 100.0.r),
-          imageSize: markerSize ?? Size(100.0.r, 100.0.r),
-        );
-    }
-  }
-
-  Future<google_map.Marker> getWidgetGoogleMap({
+  Future<Marker> getMarker({
     required int index,
     required num key,
     Function(MyMarker marker)? onTapMarker,
   }) async {
-    return google_map.Marker(
-      markerId: google_map.MarkerId(key.toString()),
+    return Marker(
+      markerId: MarkerId(key.toString()),
       position: point,
       anchor: const Offset(0.5, 0.5),
       icon: await getBitmapFromType(type, index),
-      onTap: () => onTapMarker1?.call(item),
+      onTap: () => onTapMarker?.call(item),
     );
-  }
-
-  @override
-  String toString() {
-    return 'MyMarker{point: $point, key: $key, type: $type, nou: $nou}';
   }
 }
 
 class MyPolyLine {
   TripPoint? endPoint;
-  num? key;
+  int? key;
   String encodedPolyLine;
   Color? color;
 
   MyPolyLine({this.endPoint, this.key, this.encodedPolyLine = '', this.color});
-}
-
-class CountWidget extends StatelessWidget {
-  const CountWidget({super.key, required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    return CircleAvatar(
-      child: Text('$count'),
-    );
-  }
-}
-
-class MarkerWidget extends StatelessWidget {
-  const MarkerWidget({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return const ImageMultiType(
-      url: Assets.icons1,
-      height: 100.0,
-      width: 100.0,
-    );
-  }
-}
-
-class TextOnImage extends StatelessWidget {
-  const TextOnImage({
-    super.key,
-    required this.text,
-  });
-
-  final String text;
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        const Image(
-          image: AssetImage(
-            "assets/marker.png",
-          ),
-          height: 150,
-          width: 150,
-        ),
-        Text(
-          text,
-          style: const TextStyle(color: Colors.black),
-        )
-      ],
-    );
-  }
 }

@@ -1,16 +1,13 @@
 part of 'search_location_cubit.dart';
 
-class SearchLocationInitial extends Equatable {
-  final MapCubitStatuses statuses;
-  final List<SearchLocationResult> result;
-  final String error;
-  final String request;
+class SearchLocationInitial extends AbstractState<List<SearchLocationResult>> {
+
 
   const SearchLocationInitial({
-    required this.statuses,
-    required this.result,
-    required this.error,
-    required this.request,
+    required super.statuses,
+    required super.result,
+    required super.error,
+    required super.request,
   });
 
   factory SearchLocationInitial.initial() {
@@ -18,7 +15,7 @@ class SearchLocationInitial extends Equatable {
       result: [],
       error: '',
       request: '',
-      statuses: MapCubitStatuses.init,
+      statuses: CubitStatuses.init,
     );
   }
 
@@ -26,7 +23,7 @@ class SearchLocationInitial extends Equatable {
   List<Object> get props => [statuses, result, error];
 
   SearchLocationInitial copyWith({
-    MapCubitStatuses? statuses,
+    CubitStatuses? statuses,
     List<SearchLocationResult>? result,
     String? error,
     String? request,

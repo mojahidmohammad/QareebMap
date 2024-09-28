@@ -1,42 +1,42 @@
 import 'dart:convert';
 
-import 'package:bloc/bloc.dart';
-import 'package:equatable/equatable.dart';
+import 'package:m_cubit/m_cubit.dart';
 import 'package:qareeb_models/extensions.dart';
-
-import 'package:qareeb_models/global.dart';
 
 import '../../../api_manager/api_service.dart';
 import '../../../api_manager/pair_class.dart';
 import '../../../api_manager/server_proxy/server_proxy_request.dart';
 import '../../../api_manager/server_proxy/server_proxy_service.dart';
-import '../../../error_manager.dart';
 import '../../data/response/search_location_response.dart';
-import '../ather_cubit/ather_cubit.dart';
 
 part 'search_location_state.dart';
 
-class SearchLocationCubit extends Cubit<SearchLocationInitial> {
+class SearchLocationCubit extends MCubit<SearchLocationInitial> {
   SearchLocationCubit() : super(SearchLocationInitial.initial());
+
+  @override
+  String get nameCache => 'SearchLocationCubit';
+
+  @override
+  String get filter => state.filter;
+
+  @override
+  int get timeInterval => 200;
 
   Future<void> searchLocation({required String request}) async {
     if (request.isEmpty ||
         request.length < 3 ||
         request.removeSpace == state.request.removeSpace) {
-      emit(state.copyWith(statuses: MapCubitStatuses.done, result: []));
+      emit(state.copyWith(statuses: CubitStatuses.done, result: []));
       return;
     }
+
     request = 'دمشق $request';
-
-    emit(state.copyWith(statuses: MapCubitStatuses.loading, request: request));
-
-    final pair = await _searchLocationApi();
-
-    if (pair.first != null) {
-      emit(state.copyWith(statuses: MapCubitStatuses.done, result: pair.first));
-    } else {
-      emit(state.copyWith(statuses: MapCubitStatuses.done, result: []));
-    }
+    getDataAbstract(
+      fromJson: SearchLocationResult.fromJson,
+      state: state,
+      getDataApi: _searchLocationApi,
+    );
   }
 
   Future<Pair<List<SearchLocationResult>?, String?>> _searchLocationApi() async {

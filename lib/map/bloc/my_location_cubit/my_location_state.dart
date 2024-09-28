@@ -1,38 +1,34 @@
 part of 'my_location_cubit.dart';
 
-class MyLocationInitial {
-  final LatLng result;
-  final MapCubitStatuses state;
-  final String error;
-  final bool moveMap;
-
+class MyLocationInitial extends AbstractState<LatLng> {
   const MyLocationInitial({
-    required this.result,
-    required this.error,
-    required this.moveMap,
-    required this.state,
+    required super.result,
+    required super.error,
+    required super.statuses,
   });
 
   factory MyLocationInitial.initial() {
-    return MyLocationInitial(
+    return const MyLocationInitial(
       result: LatLng(0, 0),
       error: '',
-      moveMap: false,
-      state: MapCubitStatuses.init,
+      statuses: CubitStatuses.init,
     );
   }
 
+  @override
+  List<Object?> get props => [result, error, statuses];
+
   MyLocationInitial copyWith({
     LatLng? result,
-    MapCubitStatuses? state,
+    CubitStatuses? statuses,
     String? error,
-    bool? moveMap,
   }) {
     return MyLocationInitial(
       result: result ?? this.result,
-      state: state ?? this.state,
+      statuses: statuses ?? this.statuses,
       error: error ?? this.error,
-      moveMap: moveMap ?? this.moveMap,
     );
   }
+
+
 }

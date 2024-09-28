@@ -20,16 +20,13 @@ import 'package:qareeb_models/trip_process/data/response/trip_response.dart';
 import '../../../api_manager/api_service.dart';
 import '../../../api_manager/pair_class.dart';
 import '../../data/models/my_marker.dart';
-import '../../utile.dart';
+import '../../util.dart';
 import '../ather_cubit/ather_cubit.dart';
 
 part 'map_controller_state.dart';
 
 class MapControllerCubit extends Cubit<MapControllerInitial> {
   MapControllerCubit() : super(MapControllerInitial.initial());
-
-  var mapHeight = 640.0;
-  var mapWidth = 360.0;
 
   void setGoogleMap(GoogleMapController? controller) => state.controller = controller;
 
@@ -48,10 +45,9 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
     return center;
   }
 
-  void test() {}
-
   void addMarker({required MyMarker marker}) {
-    state.markers[marker.key ?? marker.point.hashCode] = marker;
+    state.markers[marker.markerKey??marker.point.hashCode] = marker;
+
     emit(state.copyWith(markerNotifier: state.markerNotifier + 1));
   }
 
@@ -74,12 +70,12 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
   }
 
   void addMarkers({
-    required List<MyMarker> marker,
+    required List<MyMarker> markers,
     bool update = true,
     bool centerZoom = false,
   }) {
-    for (var e in marker) {
-      state.markers[e.key ?? e.point.hashCode] = e;
+    for (var marker in markers) {
+      state.markers[marker.markerKey ?? marker.point.hashCode] = marker;
     }
     if (centerZoom) {
       centerPointMarkers();
@@ -106,7 +102,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       bool? withPathLength}) {
     clearMap(false);
 
-    addMarkers(marker: path.getMarkers(onTapMarker: onTapMarker), update: false);
+    addMarkers(markers: path.getMarkers(onTapMarker: onTapMarker), update: false);
 
     addEncodedPolyLines(
       myPolyLines: path.getPolyLines(),
@@ -123,7 +119,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
 
   void addTrip({required Trip trip, bool? withPathLength}) {
     addMarkers(
-      marker: trip.getMarkers(),
+      markers: trip.getMarkers(),
     );
 
     centerPointMarkers();
@@ -170,11 +166,19 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
     state.polyLines.clear();
 
     addMarkers(
-      marker: [
+      markers: [
         if (trip.startIsSet)
-          MyMarker(point: trip.startLocation, type: MyMarkerType.sharedPint),
+          MyMarker(
+            point: trip.startLocation,
+            type: MyMarkerType.sharedPint,
+            markerKey: trip.startLocation.hashCode,
+          ),
         if (trip.endIsSet)
-          MyMarker(point: trip.endLocation, type: MyMarkerType.sharedPint),
+          MyMarker(
+            point: trip.endLocation,
+            type: MyMarkerType.sharedPint,
+            markerKey: trip.endLocation.hashCode,
+          ),
       ],
     );
 
@@ -250,6 +254,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
         addMarker(
           marker: MyMarker(
             point: list[list.length ~/ 2],
+            markerKey: (list[list.length ~/ 2]).hashCode,
             costumeMarker: PathLengthWidget(
               text: '${(calculateDistance(list) / 1000).toStringAsFixed(1)} كم',
             ),
@@ -272,6 +277,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       addMarker(
         marker: MyMarker(
           point: list[list.length ~/ 2],
+          markerKey: (list[list.length ~/ 2]).hashCode,
           costumeMarker: PathLengthWidget(
             text: '${(calculateDistance(list) / 1000).toStringAsFixed(1)} كم',
           ),
@@ -303,6 +309,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
         addMarker(
           marker: MyMarker(
             point: e.endPoint!.getLatLng,
+            markerKey: (e.endPoint!.getLatLng).hashCode,
             type: MyMarkerType.point,
             item: e.endPoint,
           ),
@@ -314,6 +321,7 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
         addMarker(
           marker: MyMarker(
             point: list[list.length ~/ 2],
+            markerKey: (list[list.length ~/ 2]).hashCode,
             costumeMarker: PathLengthWidget(
               text: '${(calculateDistance(list) / 1000).toStringAsFixed(1)} كم',
             ),
@@ -390,14 +398,14 @@ class MapControllerCubit extends Cubit<MapControllerInitial> {
       {required List<TripPoint> points, Function(dynamic item)? onTapMarker}) {
     state.markers.clear();
     addMarkers(
-        marker: points.mapIndexed(
+        markers: points.mapIndexed(
       (i, e) {
         return MyMarker(
           point: e.getLatLng,
           type: MyMarkerType.point,
-          key: e.id,
+          markerKey: e.id,
           item: e,
-          onTapMarker1: onTapMarker,
+          onTapMarker: onTapMarker,
         );
       },
     ).toList());

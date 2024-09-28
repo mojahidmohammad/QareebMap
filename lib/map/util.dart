@@ -2,11 +2,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:collection/collection.dart';
 import 'package:drawable_text/drawable_text.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart' as google;
-import 'package:latlong2/latlong.dart' as ll;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:map_package/api_manager/api_service.dart';
 import 'package:map_package/map/bloc/map_controller_cubit/map_controller_cubit.dart';
 import 'package:qareeb_models/extensions.dart';
@@ -14,40 +11,13 @@ import 'package:qareeb_models/global.dart';
 import 'package:qareeb_models/trip_path/data/models/trip_path.dart';
 import 'package:qareeb_models/trip_process/data/response/trip_response.dart';
 
+import '../generated/assets.dart';
 import 'data/models/my_marker.dart';
 
-extension DoubleHealper on double {
-  int get getZoomMarkerCount {
-    if (this >= 11 && this < 12 || this < 10) return 10;
-    if (this >= 12 && this < 13) return 15;
-    if (this >= 13 && this < 14) return 30;
-    if (this >= 14 && this < 15) return 40;
-    if (this > 15) return 100000;
 
-    return 100000;
-  }
-}
+const initialPoint = LatLng(33.514631885313264, 36.27654397981723);
 
-extension LatLngHealper on google.LatLng {
-  ll.LatLng get ll2 => ll.LatLng(latitude, longitude);
-}
-
-extension GLatLngHealper on ll.LatLng {
-  google.LatLng get gll => google.LatLng(latitude, longitude);
-}
-
-const initialPoint = google.LatLng(33.514631885313264, 36.27654397981723);
-const initialPointBaghdad = google.LatLng(33.313120604340895, 44.37581771812867);
-
-class CachedTileProvider extends TileProvider {
-  @override
-  ImageProvider<Object> getImage(TileCoordinates coordinates, TileLayer options) {
-    return CachedNetworkImageProvider(
-      getTileUrl(coordinates, options),
-      //Now you can set options that determine how the image gets cached via whichever plugin you use.
-    );
-  }
-}
+const initialPointBaghdad = LatLng(33.313120604340895, 44.37581771812867);
 
 const singleMarkerKey = -5622;
 
@@ -61,6 +31,7 @@ extension PathMap on TripPath {
             MyMarker(
               item: i,
               point: e.startPoint.getLatLng,
+              markerKey: e.startPoint.getLatLng.hashCode,
               type: MyMarkerType.sharedPint,
             ),
           );
@@ -68,10 +39,11 @@ extension PathMap on TripPath {
 
         list.add(
           MyMarker(
-            item: i+1,
+            item: i + 1,
+            markerKey: e.startPoint.getLatLng.hashCode,
             point: e.endPoint.getLatLng,
             type: MyMarkerType.sharedPint,
-            onTapMarker1: onTapMarker,
+            onTapMarker: onTapMarker,
           ),
         );
       },
@@ -91,13 +63,81 @@ extension PathMap on TripPath {
   }
 }
 
+extension IconPoint on num {
+  String get iconPoint {
+    final data = toInt() + 1;
+    switch (data) {
+      case 1:
+        return Assets.icons1;
+      case 2:
+        return Assets.icons2;
+      case 3:
+        return Assets.icons3;
+      case 4:
+        return Assets.icons4;
+      case 5:
+        return Assets.icons5;
+      case 6:
+        return Assets.icons6;
+      case 7:
+        return Assets.icons7;
+      case 8:
+        return Assets.icons8;
+      case 9:
+        return Assets.icons9;
+      case 10:
+        return Assets.icons10;
+      case 11:
+        return Assets.icons11;
+      case 12:
+        return Assets.icons12;
+      case 13:
+        return Assets.icons13;
+      case 14:
+        return Assets.icons14;
+      case 15:
+        return Assets.icons15;
+      case 16:
+        return Assets.icons16;
+      case 17:
+        return Assets.icons17;
+      case 18:
+        return Assets.icons18;
+      case 19:
+        return Assets.icons19;
+      case 20:
+        return Assets.icons20;
+      case 21:
+        return Assets.icons21;
+      case 22:
+        return Assets.icons22;
+      case 23:
+        return Assets.icons23;
+      case 24:
+        return Assets.icons24;
+      case 25:
+        return Assets.icons25;
+      case 26:
+        return Assets.icons26;
+    }
+    return Assets.icons26;
+  }
+}
+
 extension NormalTripMap on Trip {
   List<MyMarker> getMarkers() {
     return [
-      MyMarker(point: startPoint, type: MyMarkerType.sharedPint),
-      MyMarker(point: endPoint, type: MyMarkerType.sharedPint),
+      MyMarker(
+          point: startPoint,
+          type: MyMarkerType.sharedPint,
+          markerKey: startPoint.hashCode),
+      MyMarker(
+          point: endPoint, type: MyMarkerType.sharedPint, markerKey: endPoint.hashCode),
       if (preAcceptPoint != null)
-        MyMarker(point: preAcceptPoint!, costumeMarker: 0.0.verticalSpace),
+        MyMarker(
+            point: preAcceptPoint!,
+            costumeMarker: 0.0.verticalSpace,
+            markerKey: preAcceptPoint!.hashCode),
     ];
   }
 }

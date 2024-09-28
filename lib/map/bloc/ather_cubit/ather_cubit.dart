@@ -1,44 +1,38 @@
 import 'dart:convert';
 import 'dart:math';
 
-import 'package:equatable/equatable.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:m_cubit/abstraction.dart';
 import 'package:qareeb_models/extensions.dart';
 
-import 'package:qareeb_models/global.dart';
 import '../../../api_manager/api_service.dart';
 import '../../../api_manager/pair_class.dart';
 import '../../../api_manager/server_proxy/server_proxy_request.dart';
 import '../../../api_manager/server_proxy/server_proxy_service.dart';
 import '../../data/response/ather_response.dart';
-import '../../ui/widget/map_widget.dart';
+import '../../ui/widget/google_map_widget.dart';
+import '../../util.dart';
 import '../map_controller_cubit/map_controller_cubit.dart';
 
 part 'ather_state.dart';
-enum MapCubitStatuses { init, loading, done, error }
+
 const atherKey = '5BE3080722588655FE55B8E89B765827';
 
-class AtherCubit extends Cubit<AtherInitial> {
+class AtherCubit extends MCubit<AtherInitial> {
   AtherCubit() : super(AtherInitial.initial());
 
   Future<void> getDriverLocation(List<String> ime) async {
-    if (isAppleTestFromMapPackage) return;
-    if (isClosed) return;
-
-    if (ime.isEmpty) return;
+    if (isAppleTestFromMapPackage || isClosed || ime.isEmpty) return;
 
     final pair = await getDriverLocationApi(ime);
 
-    if (pair.first != null) {
-      if (isClosed) return;
-      emit(state.copyWith(statuses: MapCubitStatuses.done, result: pair.first));
-    }
+    if (pair.first == null || isClosed) return;
+
+    emit(state.copyWith(statuses: CubitStatuses.done, result: pair.first));
   }
 
   void clearDrivers() {
-    emit(state.copyWith(statuses: MapCubitStatuses.done, result: []));
+    emit(state.copyWith(statuses: CubitStatuses.done, result: []));
   }
 
   static Future<Pair<List<Ime>?, String?>> getDriverLocationApi(List<String> ime) async {
@@ -62,7 +56,11 @@ class AtherCubit extends Cubit<AtherInitial> {
     );
 
     if (pair.first != null) {
-      return Pair(AtherResponse.fromJson(jsonDecode(pair.first) is! Map?{}:jsonDecode(pair.first), ime).imes, null);
+      final list = AtherResponse.fromJson(
+              jsonDecode(pair.first) is! Map ? {} : jsonDecode(pair.first), ime)
+          .imes;
+      list.removeWhere((e) => e.lat == 0 || e.lng == 0);
+      return Pair(list, null);
     } else {
       return Pair(null, pair.second ?? '');
     }

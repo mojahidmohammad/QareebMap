@@ -1,37 +1,37 @@
 part of 'ather_cubit.dart';
 
-class AtherInitial extends Equatable {
-  final MapCubitStatuses statuses;
-  final List<Ime> result;
-  final String error;
+class AtherInitial extends AbstractState<List<Ime>> {
+  List<String> get mRequest => request;
 
   const AtherInitial({
-    required this.statuses,
-    required this.result,
-    required this.error,
+    required super.statuses,
+    required super.result,
+    required super.error,
+    super.request,
   });
 
   factory AtherInitial.initial() {
     return const AtherInitial(
       result: [],
       error: '',
-      statuses: MapCubitStatuses.init,
+      statuses: CubitStatuses.init,
     );
   }
 
   @override
-  List<Object> get props => [statuses, result, error];
+  List<Object> get props => [statuses, result, error, if (request != null) request];
 
   AtherInitial copyWith({
-    MapCubitStatuses? statuses,
+    CubitStatuses? statuses,
     List<Ime>? result,
+    List<String>? request,
     String? error,
   }) {
     return AtherInitial(
       statuses: statuses ?? this.statuses,
       result: result ?? this.result,
       error: error ?? this.error,
+      request: request ?? this.request,
     );
   }
-
 }

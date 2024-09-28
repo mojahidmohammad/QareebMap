@@ -13,10 +13,12 @@ import 'dart:math' as math;
 import '../../../generated/assets.dart';
 import '../../bloc/ather_cubit/ather_cubit.dart';
 import '../../bloc/map_controller_cubit/map_controller_cubit.dart';
-import '../../bloc/set_point_cubit/map_control_cubit.dart';
 
-import '../../utile.dart';
-import 'map_widget.dart';
+import '../../util.dart';
+
+bool isAppleTestFromMapPackage = false;
+
+final List<String> imeis = [];
 
 class GMapWidget extends StatefulWidget {
   const GMapWidget({
@@ -63,9 +65,6 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
   Widget build(BuildContext context) {
     return MultiBlocListener(
       listeners: [
-        BlocListener<MapControlCubit, MapControlInitial>(
-          listener: (context, state) {},
-        ),
         if (widget.atherListener)
           BlocListener<AtherCubit, AtherInitial>(
             listener: (context, state) async {
@@ -143,7 +142,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
             if (state.centerZoomPoints.isNotEmpty) {
               final bound = calculateLatLngBounds(state.centerZoomPoints);
 
-              final  midpoint = LatLng(
+              final midpoint = LatLng(
                 (bound.southwest.latitude + bound.northeast.latitude) / 2,
                 (bound.southwest.longitude + bound.northeast.longitude) / 2,
               );
@@ -153,10 +152,10 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
                   CameraPosition(
                     target: midpoint,
                     zoom: getZoomLevel(
-                      bound.southwest,
-                      bound.northeast,
-                      mapWidgetKey.currentContext?.size?.width ?? 1.0.sw,
-                    ),
+                          bound.southwest,
+                          bound.northeast,
+                          mapWidgetKey.currentContext?.size?.width ?? 1.0.sw,
+                        ) ,
                   ),
                 ),
               );
@@ -223,7 +222,7 @@ class GMapWidgetState extends State<GMapWidget> with TickerProviderStateMixin {
   Future<List<Future<Marker>>> initMarker(MapControllerInitial state) async {
     return state.markers.keys.mapIndexed(
       (i, key) async {
-        return await state.markers[key]!.getWidgetGoogleMap(
+        return await state.markers[key]!.getMarker(
           index: i,
           key: key,
         );
