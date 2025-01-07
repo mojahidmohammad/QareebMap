@@ -35,7 +35,8 @@ class AtherCubit extends MCubit<AtherInitial> {
     emit(state.copyWith(statuses: CubitStatuses.done, result: []));
   }
 
-  static Future<Pair<List<Ime>?, String?>> getDriverLocationApi(List<String> ime) async {
+  static Future<Pair<List<Ime>?, String?>> getDriverLocationApi(
+      List<String> ime) async {
     if (isAppleTestFromMapPackage) return Pair([], null);
 
     final pair = await getServerProxyApi(

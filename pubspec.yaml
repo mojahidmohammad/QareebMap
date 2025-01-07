@@ -12,32 +12,24 @@ dependencies:
   flutter:
     sdk: flutter
 
-  drawable_text:
-    git:
-      url: https://github.com/saedAlHanash/drawable_text
-      ref: android
-
-  image_multi_type:
-    git:
-      url: https://github.com/saedAlHanash/image_multi_type
 
 
-  qareeb_models:
-    git:
-      url: https://github.com/saedAlHanash/qareeb_models
-
-
-#
-#  qareeb_models:
-#    path: ../../packages/qareeb_models
 
   m_cubit:
-    git:
-      url: https://github.com/saedAlHanash/m_cubit
+    path: ../m_cubit
 
-#
-#  m_cubit:
-#    path: ../../packages/m_cubit
+  image_multi_type:
+    path: ../image_multi_type
+
+  qareeb_models:
+    path: ../qareeb_models
+
+
+
+  drawable_text:
+    path: ../drawable_text
+
+
 
 
   google_maps_flutter: ^2.9.0
@@ -63,5 +55,6 @@ flutter:
 
   assets:
     - assets/icons/
+    - assets/icons/restaurant.png
     - assets/
 

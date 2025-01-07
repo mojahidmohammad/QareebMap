@@ -18,12 +18,12 @@ class MyLocationCubit extends Cubit<MyLocationInitial> {
 
     emit(state.copyWith(statuses: CubitStatuses.loading));
 
-    final pos = (latestLocation == true)
-        ? await Geolocator.getLastKnownPosition()
-        : await Geolocator.getCurrentPosition();
+      final pos = (latestLocation == true)
+          ? await Geolocator.getLastKnownPosition()
+          : await Geolocator.getCurrentPosition();
 
-    if (pos != null) {
-      final latLng = LatLng(pos.latitude, pos.longitude);
+      if (pos != null) {
+        final latLng = LatLng(pos.latitude, pos.longitude);
       emit(state.copyWith(result: latLng, statuses: CubitStatuses.done));
     } else {
       emit(state.copyWith(error: 'Error My Location ', statuses: CubitStatuses.error));
