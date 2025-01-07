@@ -12,22 +12,34 @@ dependencies:
   flutter:
     sdk: flutter
 
+  qareeb_models:
+    git:
+      url: https://github.com/saedAlHanash/qareeb_models
 
-
-
-  m_cubit:
-    path: ../m_cubit
 
   image_multi_type:
-    path: ../image_multi_type
+    git:
+      url: https://github.com/saedAlHanash/image_multi_type
 
-  qareeb_models:
-    path: ../qareeb_models
-
+  m_cubit:
+    git:
+      url: https://github.com/saedAlHanash/m_cubit
 
 
   drawable_text:
-    path: ../drawable_text
+    git:
+      url: https://github.com/saedAlHanash/drawable_text
+      ref: master
+#  image_multi_type:
+#    path: ../image_multi_type
+#
+#  qareeb_models:
+#    path: ../qareeb_models
+
+
+
+#  drawable_text:
+#    path: ../drawable_text
 
 
 
