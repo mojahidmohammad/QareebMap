@@ -1,10 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
+
 import 'package:collection/collection.dart';
 import 'package:drawable_text/drawable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:map_package/api_manager/api_service.dart';
+
 import 'package:map_package/map/bloc/map_controller_cubit/map_controller_cubit.dart';
 import 'package:qareeb_models/extensions.dart';
 import 'package:qareeb_models/global.dart';
@@ -158,9 +158,9 @@ class PathLengthWidget extends StatelessWidget {
       alignment: Alignment.center,
       child: Text(
         text,
-        style: TextStyle(
+        style:const  TextStyle(
           color: Colors.black,
-          fontFamily: FontManager.cairoBold.name,
+
         ),
       ),
     );

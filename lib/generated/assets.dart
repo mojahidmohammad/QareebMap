@@ -39,6 +39,7 @@ class Assets {
   static const String iconsMainColorMarker = 'assets/icons/main_color_marker.svg';
   static const String iconsMarkerStart = 'assets/icons/marker_start.svg';
   static const String iconsQareebPoint = 'assets/icons/qareeb_point.svg';
+  static const String iconsRestaurant = 'assets/icons/restaurant.png';
 
 }
 
