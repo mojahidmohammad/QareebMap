@@ -14,17 +14,17 @@ dependencies:
 
   drawable_text:
     git:
-      url: https://github.com/saedAlHanash/drawable_text
+      url: https://github.com/mojahidmohammad/DrawableText
       ref: android
 
   image_multi_type:
     git:
-      url: https://github.com/saedAlHanash/image_multi_type
+      url: https://github.com/mojahidmohammad/ImageMultiType
 
 
   qareeb_models:
     git:
-      url: https://github.com/saedAlHanash/qareeb_models
+      url: https://github.com/mojahidmohammad/qareepModel
 
 
 #
@@ -33,7 +33,7 @@ dependencies:
 
   m_cubit:
     git:
-      url: https://github.com/saedAlHanash/m_cubit
+      url: https://github.com/mojahidmohammad/MyCubit
 
 #
 #  m_cubit:
